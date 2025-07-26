@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getUserStatusUrl } from "./requestURL.js";
 import { storage } from "../storageFallback.js";
 
 function searchResult(result, param){

@@ -160,4 +160,4 @@ function CodeforcesForm({ codeforcesId, setCodeforcesId, error, isLoading, onTry
   )
 }
 
-export default CodeforcesForm
+export default CodeforcesForm;

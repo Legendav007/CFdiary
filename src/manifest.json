@@ -1,0 +1,30 @@
+{
+    "manifest_version": 3,
+    "name": "CF Diary",
+    "version": "1.0",
+    "description": "A Chrome extension to manage Codeforces problems.",
+    "action": {
+      "default_popup": "index.html"
+    },
+    "permissions": [
+      "tabs",
+      "activeTab",
+      "storage",
+      "scripting"
+    ],
+    "host_permissions": [
+      "https://sheet.best/*",
+      "https://codeforces.com/*"
+    ],
+    "background": {
+      "service_worker": "assets/background.js",
+      "type": "module"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://codeforces.com/*"],
+        "js": ["assets/content.js"]
+      }
+    ]
+}
+  

@@ -4,6 +4,19 @@ import path from "path"
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    outDir: 'dist',
+    rollupOptions: {
+      input: {
+        background: 'src/background.js',
+        content: 'src/contentScript.js',
+        popup: 'index.html'
+      },
+      output: {
+        entryFileNames: 'assets/[name].js'
+      }
+    }
+  },
   plugins: [react()],
   resolve: {
     alias: {
