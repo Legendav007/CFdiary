@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Loader2, Plus, AlertCircle, ExternalLink, CheckCircle } from "lucide-react"
 import { checkCodeforcesSite } from "../helpers/utility.js"
 import { storage } from "../storageFallback.js"
-
+import Footer from "@/components/ui/footer.jsx"
 const AddProblems = () => {
   const [currentUrl, setCurrentUrl] = useState("")
   const [error, setError] = useState("noerror")
@@ -48,7 +48,8 @@ const AddProblems = () => {
   }, [])
 
   const openModalOnPage = async () => {
-    if (typeof chrome !== "undefined" && chrome.tabs) {
+    // console.log("I am here on fn-model-on-page");
+    if(typeof chrome !== "undefined" && chrome.tabs){
       setIsProcessing(true)
       try{
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -100,8 +101,8 @@ const AddProblems = () => {
     )
   }
   const getButtonVariant = () => {
-    if (error !== "noerror") return "destructive";
-    if (isButtonDisabled) return "secondary";
+    if(error !== "noerror") return "destructive";
+    if(isButtonDisabled) return "secondary";
     return "default";
   }
   if(isLoading){
@@ -151,7 +152,6 @@ const AddProblems = () => {
             </div>
           </div>
 
-          {/* Status Badge */}
           <div className="flex justify-center">
             {error === "noerror" ? (
               <Badge variant="default" className="gap-1">
@@ -166,7 +166,6 @@ const AddProblems = () => {
             )}
           </div>
 
-          {/* Action Button */}
           <Button
             onClick={openModalOnPage}
             disabled={isButtonDisabled}
@@ -193,6 +192,7 @@ const AddProblems = () => {
               Navigate to a Codeforces problem page to add it to your collection
             </p>
           </div>
+          <Footer/>
         </CardContent>
       </Card>
     </div>

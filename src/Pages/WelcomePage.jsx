@@ -1,6 +1,7 @@
 import { ExternalLink, BookOpen, Trophy, Code, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import  Footer   from "@/components/ui/footer"
 
 const WelcomePage = () => {
   return (
@@ -115,6 +116,8 @@ const WelcomePage = () => {
               </Button>
             </div>
           </div>
+          {/* About me section */}
+          <Footer/>
         </CardContent>
       </Card>
     </div>

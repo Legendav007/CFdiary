@@ -14,7 +14,7 @@ import AddProblems from "./AddProblem"
 import SettingsMenu from "./Setting"
 import { storage } from "../storageFallback.js"
 import { checkSheetBestUrl, checkCodeforcesUrl } from "../helpers/utility.js"
-
+import Footer from "@/components/ui/footer"
 const steps = [
   {
     id: 1,
@@ -287,7 +287,6 @@ const StartingPage = () => {
             )}
           </CardContent>
         </Card>
-
         <div className="text-center mt-6">
           <p className="text-xs text-gray-500">Secure setup • Your data stays private</p>
         </div>
