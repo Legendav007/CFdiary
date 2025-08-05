@@ -2,7 +2,7 @@ export const checkCodeforcesUrl = (url) => {
     if (!url || typeof url !== "string") return false
     const codeforcesUrlPattern = /^https:\/\/codeforces\.com\/profile\/[a-zA-Z0-9_-]+$/
     return codeforcesUrlPattern.test(url.trim())
-  }
+}
 export const checkSheetBestUrl = (url) => {
     if (!url || typeof url !== "string") return false
     const sheetBestUrlPattern = /^https:\/\/api\.sheetbest\.com\/sheets\/[a-zA-Z0-9_-]+$/

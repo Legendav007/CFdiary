@@ -42,36 +42,37 @@ const SettingsMenu = ({
     setChangeUrl("");
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async ()=>{
     if(changeUrl === "codeforcesid"){
-      storage.set({ CODEFORCES_VERIFIED: false }, () => {
-        handleVerifyCodeforcesId(codeforcesId, setError, undefined, setLoading, closeModal);
-        if(error){
-          storage.set({ CODEFORCES_VERIFIED: true });
-        }
-      })
+      storage.set({ CODEFORCES_VERIFIED: false }, () => {});
+      try{
+        await handleVerifyCodeforcesId(codeforcesId, setError, undefined, setLoading, closeModal);
+        storage.set({ CODEFORCES_VERIFIED: true });
+      } catch (error) {
+        storage.set({ CODEFORCES_VERIFIED: false });
+      }
     }
     if(changeUrl === "sheetbesturl"){
-      storage.set({ SHEETBEST_VERIFIED: false }, () => {
-        handleVerifySheetBestUrl(sheetBestUrl, setError, undefined, setLoading, closeModal);
-        if(error){
-          storage.set({ SHEETBEST_VERIFIED: true });
-        }
-      })
+      storage.set({ SHEETBEST_VERIFIED: false }, () => {});
+      try{
+        await handleVerifySheetBestUrl(sheetBestUrl, setError, undefined, setLoading, closeModal);
+        storage.set({ SHEETBEST_VERIFIED: true });
+      } catch (error) {
+        storage.set({ SHEETBEST_VERIFIED: false });
+      }
     }
-  }
+  };  
 
   useEffect(() => {
     storage.get(
-      ["CODEFORCES_AVATAR_URL", "CODEFORCES_VERIFIED", "SHEETBEST_VERIFIED", "CODEFORCES_USERNAME"],
+      ["CODEFORCES_AVATAR_URL", "CODEFORCES_VERIFIED", "SHEETBEST_VERIFIED", "CODEFORCES_ID"],
       (result) => {
         setAvatarUrl(result.CODEFORCES_AVATAR_URL || "");
         setCodeforcesVerified(result.CODEFORCES_VERIFIED || false);
         setSheetBestVerified(result.SHEETBEST_VERIFIED || false);
-        setUsername(result.CODEFORCES_USERNAME || "");
+        setUsername(result.CODEFORCES_ID || "");
       },
     )
-
     const handleStorageChange = (changes, areaName) => {
       if(areaName === "local"){
         if(changes.CODEFORCES_AVATAR_URL){
@@ -83,8 +84,8 @@ const SettingsMenu = ({
         if(changes.SHEETBEST_VERIFIED){
           setSheetBestVerified(changes.SHEETBEST_VERIFIED.newValue || false);
         }
-        if(changes.CODEFORCES_USERNAME){
-          setUsername(changes.CODEFORCES_USERNAME.newValue || "");
+        if(changes.CODEFORCES_ID){
+          setUsername(changes.CODEFORCES_ID.newValue || "");
         }
       }
     }
@@ -111,7 +112,7 @@ const SettingsMenu = ({
   }
 
   const getModalTitle = () => {
-    switch (changeUrl) {
+    switch(changeUrl){
       case "codeforcesid":
         return "Update Codeforces Profile";
       case "sheetbesturl":
@@ -122,7 +123,7 @@ const SettingsMenu = ({
   }
 
   const getModalDescription = () => {
-    switch (changeUrl) {
+    switch(changeUrl){
       case "codeforcesid":
         return "Change your connected Codeforces profile to track different problems.";
       case "sheetbesturl":

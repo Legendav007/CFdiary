@@ -9,12 +9,17 @@ function searchResult(result, param){
     return matchesVerdict && matchesContestId && matchesIndex;
   });
 }
-export async function updateProblems(data, callback){
-  storage.get(["SHEETBEST_URL", "CODEFORCES_ID", "CURRENT_TAB_URL"], async (result) => {
-    const { SHEETBEST_URL, CODEFORCES_ID, CURRENT_TAB_URL } = result;
+function getStorage(keys){
+  return new Promise(resolve => {
+    storage.get(keys, resolve);
+  });
+}
+export async function updateProblems(data){
+    const{ SHEETBEST_URL, CODEFORCES_ID, CURRENT_TAB_URL } = await getStorage([
+      "SHEETBEST_URL", "CODEFORCES_ID", "CURRENT_TAB_URL"
+    ]);
     if(!SHEETBEST_URL){
-      callback("Sheet.best URL not found", false);
-      return;
+      throw new Error("Sheet.Best URL is not found");
     }
     let problemSolved = false;
     try{
@@ -22,58 +27,58 @@ export async function updateProblems(data, callback){
       if (!userStatus.ok) throw new Error("Failed to fetch Codeforces status");
       const userStatusData = await userStatus.json();
       if(userStatusData?.status !== "OK"){
-        callback("Failed to fetch problem details from Codeforces", false);
-        return;
+        throw new Error("Error to fetch codeforce solved problem");
       }
-      const tabUrlSplit = CURRENT_TAB_URL.split("/");
-      const len = tabUrlSplit.length;
-      const arr = [tabUrlSplit[len - 1], tabUrlSplit[len - 2], tabUrlSplit[len - 3]].sort();
-      const searchObj = { verdict: "OK", contestId: Number(arr[0]), index: arr[1] };
+      const problemPattern = /(?:contest\/(\d+)\/problem\/([A-Z]\d*)|problemset\/problem\/(\d+)\/([A-Z]\d*))/;
+      const match = CURRENT_TAB_URL.match(problemPattern);
+      // console.log(match);
+      if(!match) throw new Error("Couldn't Parse problem details from url");
+      const c = match[1] || match[3];
+      const contestId = Number(c);
+      const index = match[2] || match[4];
+      const searchObj = { verdict: "OK", contestId, index };
       const solvedProblem = searchResult(userStatusData.result, searchObj);
-      problemSolved = solvedProblem.length > 0;
+      const problemSolved = solvedProblem.length > 0;
       if(!problemSolved){
-        callback("Solve the problem first, then submit!", false);
-        return;
+        throw new Error("Solve the problem first , then submit!");
       }
       const problemDetails = solvedProblem[0].problem;
-      const problemRating = problemDetails.rating || "N/A";
-      const problemName = `Problem${problemDetails.contestId}${problemDetails.index}`;
-      const problemTopics = problemDetails.tags.join(", ");
+      const ProblemRating = problemDetails.rating || "N/A";
+      const ProblemName = `=HYPERLINK("${CURRENT_TAB_URL}" , "${contestId}${index}")`;
+      const ProblemTopics = problemDetails.tags.join(", ");
       const date = new Date(solvedProblem[0].creationTimeSeconds * 1000);
-      const dateSolved = date.toLocaleDateString("en-GB", {
+      const DateSolved = date.toLocaleDateString("en-GB", {
         day: "numeric",
         month: "short",
         year: "numeric",
       }).replace(/ /g, "-");
 
-      const checkResponse = await axios.get(`${SHEETBEST_URL}?problemName=${problemName}`);
+      const checkResponse = await axios.get(`${SHEETBEST_URL}?ProblemName=${ProblemName}`);
       if(!checkResponse.data || checkResponse.data.length === 0) {
-        callback("Problem not found in the sheet. Please add it before updating.", false);
-        return;
+        throw new Error("Problem doesn't exist in the sheet");
       }
       const patchPayload = {
-        problemRating,
-        problemStatus: data.status,
-        remarks: data.remarks,
-        dateSolved,
-        timeTaken : data.timeTaken,
-        takeaways: data.takeaways,
-        problemTopics,
-        problemUrl: CURRENT_TAB_URL,
+        ProblemName,
+        ProblemRating,
+        ProblemStatus: data.status,
+        Remarks: data.remarks,
+        DateSolved,
+        Takeaways: data.takeaways,
+        TimeTaken : data.timeTaken,
+        ProblemTopics,
       };
-      const patchResponse = await axios.patch(`${SHEETBEST_URL}?problemName=${problemName}`, patchPayload, {
+      const patchResponse = await axios.patch(`${SHEETBEST_URL}?ProblemName=${ProblemName}`, patchPayload, {
         headers: { "Content-Type": "application/json" },
       });
       if(patchResponse.status === 200){
-        callback("Problem data successfully updated in your Sheet!", true);
+        return "Problem successfully updated to the sheet! 🎉";
       }
       else{
-        callback("Failed to update problem data", false);
+        throw new Error("Problem not upadated due to sheet.best API");
       }
     } catch (error) {
       const message = `An error occurred while updating the problem: ${error}`;
       console.error(message);
-      callback(message, false);
+      throw new Error(message);
     }
-  });
 }

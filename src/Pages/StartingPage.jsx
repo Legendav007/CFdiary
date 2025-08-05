@@ -125,7 +125,7 @@ const StartingPage = () => {
   }
 
   const handleTryAgainSheetBestForm = () => {
-    setSheetBestUrl("https://sheet.best/api/sheets/your-endpoint-id");
+    setSheetBestUrl("https://api.sheetbest.com/sheets/your-endpoint-id");
     setError("NoError");
   }
 

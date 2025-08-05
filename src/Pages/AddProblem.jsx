@@ -58,7 +58,7 @@ const AddProblems = () => {
           }
           setIsProcessing(false);
         })
-      } catch (err) {
+      } catch(err){
         console.error("Error sending message to tab:", err);
         setError("Failed to communicate with the page");
         setIsProcessing(false);
@@ -145,7 +145,10 @@ const AddProblems = () => {
           <div className="space-y-2">
             <label className="text-sm font-medium text-muted-foreground">Current Page:</label>
             <div className="flex items-center gap-2 p-2 bg-muted rounded-md">
-              <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              <a href={currentUrl?currentUrl:"https://codeforces.com"} target="_blank" rel="noopener noreferrer" aria-label="Open external link">
+                <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+              </a>
+              {/* <ExternalLink className="w-4 h-4 text-muted-foreground flex-shrink-0" /> */}
               <span className="text-sm truncate" title={currentUrl}>
                 {currentUrl ? getUrlDisplay(currentUrl) : "No URL detected"}
               </span>

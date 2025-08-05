@@ -2,5 +2,5 @@ import { clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs) {
-  return twMerge(clsx(...inputs)) // <-- spread here!
+  return twMerge(clsx(...inputs))
 }

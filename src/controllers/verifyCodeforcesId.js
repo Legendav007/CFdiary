@@ -18,7 +18,7 @@ const handleVerifyCodeforcesId = async (
     const userId = codeforcesId.substring(31); 
 
     try{
-      const response = await fetch(`https://codeforces.com/api/user.status?handle=${userId}&from=1&count=250`);
+      const response = await fetch(`https://codeforces.com/api/user.info?handles=${userId}`);
       if(response.ok){
         const data = await response.json();
         if(data?.status === "OK"){
